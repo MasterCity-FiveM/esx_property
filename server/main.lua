@@ -23,9 +23,9 @@ function SetPropertyOwned(name, price, rented, owner)
 			TriggerClientEvent('esx_property:setPropertyOwned', xPlayer.source, name, true, rented)
 
 			if rented then
-				xPlayer.showNotification(_U('rent_for', ESX.Math.GroupDigits(price)))
+				TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('rent_for', ESX.Math.GroupDigits(price)), type = "info", timeout = 5000, layout = "bottomCenter"})
 			else
-				xPlayer.showNotification(_U('buy_for', ESX.Math.GroupDigits(price)))
+				TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('buy_for', ESX.Math.GroupDigits(price)), type = "info", timeout = 5000, layout = "bottomCenter"})
 			end
 		end
 	end)
@@ -47,11 +47,11 @@ function RemoveOwnedProperty(name, owner, noPay)
 
 					if not noPay then
 						if result[1].rented == 1 then
-							xPlayer.showNotification(_U('moved_out'))
+							TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('moved_out'), type = "error", timeout = 5000, layout = "bottomCenter"})
 						else
 							local sellPrice = ESX.Math.Round(result[1].price / Config.SellModifier)
 
-							xPlayer.showNotification(_U('moved_out_sold', ESX.Math.GroupDigits(sellPrice)))
+							TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('moved_out_sold', ESX.Math.GroupDigits(sellPrice)), type = "info", timeout = 5000, layout = "bottomCenter"})
 							xPlayer.addAccountMoney('bank', sellPrice)
 						end
 					end
@@ -184,7 +184,7 @@ AddEventHandler('esx_property:buyProperty', function(propertyName)
 		xPlayer.removeMoney(property.price)
 		SetPropertyOwned(propertyName, property.price, false, xPlayer.identifier)
 	else
-		xPlayer.showNotification(_U('not_enough'))
+		TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('not_enough'), type = "error", timeout = 5000, layout = "bottomCenter"})
 	end
 end)
 
@@ -232,12 +232,12 @@ AddEventHandler('esx_property:getItem', function(owner, type, item, count)
 				if xPlayer.canCarryItem(item, count) then
 					inventory.removeItem(item, count)
 					xPlayer.addInventoryItem(item, count)
-					xPlayer.showNotification(_U('have_withdrawn', count, inventoryItem.label))
+					TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text =_U('have_withdrawn', count, inventoryItem.label), type = "info", timeout = 5000, layout = "bottomCenter"})
 				else
-					xPlayer.showNotification(_U('player_cannot_hold'))
+					TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text =_U('player_cannot_hold'), type = "error", timeout = 5000, layout = "bottomCenter"})
 				end
 			else
-				xPlayer.showNotification(_U('not_enough_in_property'))
+				TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text =_U('not_enough_in_property'), type = "error", timeout = 5000, layout = "bottomCenter"})
 			end
 		end)
 	elseif type == 'item_account' then
@@ -246,7 +246,7 @@ AddEventHandler('esx_property:getItem', function(owner, type, item, count)
 				account.removeMoney(count)
 				xPlayer.addAccountMoney(item, count)
 			else
-				xPlayer.showNotification(_U('amount_invalid'))
+				TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('amount_invalid'), type = "error", timeout = 5000, layout = "bottomCenter"})
 			end
 		end)
 	elseif type == 'item_weapon' then
@@ -283,10 +283,10 @@ AddEventHandler('esx_property:putItem', function(owner, type, item, count)
 			TriggerEvent('esx_addoninventory:getInventory', 'property', xPlayerOwner.identifier, function(inventory)
 				xPlayer.removeInventoryItem(item, count)
 				inventory.addItem(item, count)
-				xPlayer.showNotification(_U('have_deposited', count, inventory.getItem(item).label))
+				TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('have_deposited', count, inventory.getItem(item).label), type = "info", timeout = 5000, layout = "bottomCenter"})
 			end)
 		else
-			xPlayer.showNotification(_U('invalid_quantity'))
+			TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('invalid_quantity'), type = "error", timeout = 5000, layout = "bottomCenter"})
 		end
 	elseif type == 'item_account' then
 		if xPlayer.getAccount(item).money >= count and count > 0 then
@@ -296,7 +296,7 @@ AddEventHandler('esx_property:putItem', function(owner, type, item, count)
 				account.addMoney(count)
 			end)
 		else
-			xPlayer.showNotification(_U('amount_invalid'))
+			TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('invalid_quantity'), type = "error", timeout = 5000, layout = "bottomCenter"})
 		end
 	elseif type == 'item_weapon' then
 		if xPlayer.hasWeapon(item) then
@@ -422,9 +422,9 @@ function payRent(d, h, m)
 				if xPlayer then
 					if xPlayer.getAccount('bank').money >= v.price then
 						xPlayer.removeAccountMoney('bank', v.price)
-						xPlayer.showNotification(_U('paid_rent', ESX.Math.GroupDigits(v.price), GetProperty(v.name).label))
+						TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('paid_rent', ESX.Math.GroupDigits(v.price), GetProperty(v.name).label), type = "info", timeout = 5000, layout = "bottomCenter"})
 					else
-						xPlayer.showNotification(_U('paid_rent_evicted', GetProperty(v.name).label, ESX.Math.GroupDigits(v.price)))
+						TriggerClientEvent("pNotify:SendNotification", xPlayer.source, { text = _U('paid_rent_evicted', GetProperty(v.name).label, ESX.Math.GroupDigits(v.price)), type = "info", timeout = 5000, layout = "bottomCenter"})
 						RemoveOwnedProperty(v.name, v.owner, true)
 					end
 				else

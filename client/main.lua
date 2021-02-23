@@ -436,7 +436,7 @@ function OpenRoomMenu(property, owner)
 				elements = elements,
 			}, function(data2, menu2)
 				TriggerEvent('instance:invite', 'property', GetPlayerServerId(data2.current.value), {property = property.name, owner = owner})
-				ESX.ShowNotification(_U('you_invited', GetPlayerName(data2.current.value)))
+				exports.pNotify:SendNotification({text = _U('you_invited', GetPlayerName(data2.current.value)), type = "info", timeout = 4000})
 			end, function(data2, menu2)
 				menu2.close()
 			end)
@@ -492,7 +492,7 @@ function OpenRoomMenu(property, owner)
 				}, function(data2, menu2)
 					menu2.close()
 					TriggerServerEvent('esx_property:removeOutfit', data2.current.value)
-					ESX.ShowNotification(_U('removed_cloth'))
+					exports.pNotify:SendNotification({text = _U('removed_cloth'), type = "info", timeout = 4000})
 				end, function(data2, menu2)
 					menu2.close()
 				end)
@@ -568,7 +568,7 @@ function OpenRoomInventoryMenu(property, owner)
 
 					local quantity = tonumber(data2.value)
 					if quantity == nil then
-						ESX.ShowNotification(_U('amount_invalid'))
+						exports.pNotify:SendNotification({text = _U('amount_invalid'), type = "error", timeout = 4000})
 					else
 						menu.close()
 
@@ -642,7 +642,7 @@ function OpenPlayerInventoryMenu(property, owner)
 					local quantity = tonumber(data2.value)
 
 					if quantity == nil then
-						ESX.ShowNotification(_U('amount_invalid'))
+						exports.pNotify:SendNotification({text = _U('amount_invalid'), type = "error", timeout = 4000})
 					else
 						menu2.close()
 
@@ -660,6 +660,12 @@ function OpenPlayerInventoryMenu(property, owner)
 		end)
 	end)
 end
+
+TriggerEvent('instance:registerType', 'property', function(instance)
+	EnterProperty(instance.data.property, instance.data.owner)
+end, function(instance)
+	ExitProperty(instance.data.property)
+end)
 
 AddEventHandler('instance:loaded', function()
 	TriggerEvent('instance:registerType', 'property', function(instance)
@@ -771,6 +777,10 @@ AddEventHandler('esx_property:hasEnteredMarker', function(name, part)
 		CurrentActionMsg  = _U('press_to_menu')
 		CurrentActionData = {property = property, owner = CurrentPropertyOwner}
 	end
+	
+	if CurrentActionMsg ~= nil then
+		exports.pNotify:SendNotification({text = CurrentActionMsg, type = "info", timeout = 4000})
+	end
 end)
 
 AddEventHandler('esx_property:hasExitedMarker', function(name, part)
@@ -856,38 +866,28 @@ Citizen.CreateThread(function()
 		end
 
 		if letSleep then
-			Citizen.Wait(500)
+			Citizen.Wait(1500)
 		end
 	end
 end)
 
--- Key controls
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
-
-		if CurrentAction then
-			ESX.ShowHelpNotification(CurrentActionMsg)
-
-			if IsControlJustReleased(0, 38) then
-				if CurrentAction == 'property_menu' then
-					OpenPropertyMenu(CurrentActionData.property)
-				elseif CurrentAction == 'gateway_menu' then
-					if Config.EnablePlayerManagement then
-						OpenGatewayOwnedPropertiesMenu(CurrentActionData.property)
-					else
-						OpenGatewayMenu(CurrentActionData.property)
-					end
-				elseif CurrentAction == 'room_menu' then
-					OpenRoomMenu(CurrentActionData.property, CurrentActionData.owner)
-				elseif CurrentAction == 'room_exit' then
-					TriggerEvent('instance:leave')
-				end
-
-				CurrentAction = nil
+RegisterNetEvent('master_keymap:e')
+AddEventHandler('master_keymap:e', function() 
+	if CurrentAction then
+		if CurrentAction == 'property_menu' then
+			OpenPropertyMenu(CurrentActionData.property)
+		elseif CurrentAction == 'gateway_menu' then
+			if Config.EnablePlayerManagement then
+				OpenGatewayOwnedPropertiesMenu(CurrentActionData.property)
+			else
+				OpenGatewayMenu(CurrentActionData.property)
 			end
-		else
-			Citizen.Wait(500)
+		elseif CurrentAction == 'room_menu' then
+			OpenRoomMenu(CurrentActionData.property, CurrentActionData.owner)
+		elseif CurrentAction == 'room_exit' then
+			TriggerEvent('instance:leave')
 		end
+
+		CurrentAction = nil
 	end
 end)

@@ -5,7 +5,7 @@ ALTER TABLE `users`
 ;
 
 INSERT INTO `addon_account` (name, label, shared) VALUES
-  ('property_black_money','Argent Sale Propriété',0)
+  ('property_black_money','Money Dirty Property',0)
 ;
 
 INSERT INTO `addon_inventory` (name, label, shared) VALUES
