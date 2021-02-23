@@ -1,7 +1,7 @@
 Locales['en'] = {
   ['have_withdrawn'] = 'شما x%s %s را برداشتید.',
   ['have_deposited'] = 'شما x%s %s را گزاشتید داخل خانه.',
-  ['free_prop'] = 'خانه برای فروش',
+  ['free_prop'] = 'property for sale', -- blip
   ['property'] = 'property', -- فک کنم بلیپ عه
   ['enter'] = 'ورود',
   ['move_out'] = 'از خانه خارج شوید.',
