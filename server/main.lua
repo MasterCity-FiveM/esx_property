@@ -451,7 +451,9 @@ function payRent(d, h, m)
 				end
 
 				TriggerEvent('esx_addonaccount:getSharedAccount', 'society_realestateagent', function(account)
-					account.addMoney(v.price)
+					if account ~= nil then
+						account.addMoney(v.price)
+					end
 				end)
 
 				cb()
