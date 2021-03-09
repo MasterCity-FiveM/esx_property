@@ -20,8 +20,8 @@ Locales['en'] = {
   ['player_clothes'] = 'لباس ها',
   ['remove_cloth'] = 'پاک کردن لباس',
   ['removed_cloth'] = 'لباس از کمد لباس های شما پاک شد!',
-  ['remove_object'] = 'remove object', -- نمدونم چیه
-  ['deposit_object'] = 'deposit object', -- نمدونم چیه
+  ['remove_object'] = 'برداشتن وسایل', 
+  ['deposit_object'] = 'گزاشتن وسایل داخل خانه', 
   ['invite'] = 'دعوت کردن',
   ['dirty_money'] = 'dirty money: <span style="color:red;">$%s</span>', -- به کارمون نمیاد
   ['inventory'] = 'دارایی ها',
