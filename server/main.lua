@@ -136,6 +136,7 @@ MySQL.ready(function()
 end)
 
 ESX.RegisterServerCallback('esx_property:getProperties', function(source, cb)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getProperties', {})
 	cb(Config.Properties)
 end)
 
@@ -168,6 +169,7 @@ end)
 
 RegisterNetEvent('esx_property:rentProperty')
 AddEventHandler('esx_property:rentProperty', function(propertyName)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:rentProperty', {propertyName = propertyName})
 	local xPlayer  = ESX.GetPlayerFromId(source)
 	local property = GetProperty(propertyName)
 	local rent     = ESX.Math.Round(property.price / Config.RentModifier)
@@ -177,6 +179,7 @@ end)
 
 RegisterNetEvent('esx_property:buyProperty')
 AddEventHandler('esx_property:buyProperty', function(propertyName)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:buyProperty', {propertyName = propertyName})
 	local xPlayer  = ESX.GetPlayerFromId(source)
 	local property = GetProperty(propertyName)
 
@@ -190,16 +193,19 @@ end)
 
 RegisterNetEvent('esx_property:removeOwnedProperty')
 AddEventHandler('esx_property:removeOwnedProperty', function(propertyName)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:removeOwnedProperty', {propertyName = propertyName})
 	local xPlayer = ESX.GetPlayerFromId(source)
 	RemoveOwnedProperty(propertyName, xPlayer.identifier)
 end)
 
 AddEventHandler('esx_property:removeOwnedPropertyIdentifier', function(propertyName, identifier)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:removeOwnedPropertyIdentifier', {propertyName = propertyName, identifier = identifier})
 	RemoveOwnedProperty(propertyName, identifier)
 end)
 
 RegisterNetEvent('esx_property:saveLastProperty')
 AddEventHandler('esx_property:saveLastProperty', function(property)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:saveLastProperty', {property = property})
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.execute('UPDATE users SET last_property = @last_property WHERE identifier = @identifier', {
@@ -210,6 +216,7 @@ end)
 
 RegisterNetEvent('esx_property:deleteLastProperty')
 AddEventHandler('esx_property:deleteLastProperty', function()
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:deleteLastProperty', {})
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.execute('UPDATE users SET last_property = NULL WHERE identifier = @identifier', {
@@ -219,6 +226,7 @@ end)
 
 RegisterNetEvent('esx_property:getItem')
 AddEventHandler('esx_property:getItem', function(owner, type, item, count)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getItem', {owner = owner, type = type, item = item, count = count})
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xPlayerOwner = ESX.GetPlayerFromIdentifier(owner)
 
@@ -273,6 +281,7 @@ end)
 
 RegisterNetEvent('esx_property:putItem')
 AddEventHandler('esx_property:putItem', function(owner, type, item, count)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:putItem', {owner = owner, type = type, item = item, count = count})
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xPlayerOwner = ESX.GetPlayerFromIdentifier(owner)
 
@@ -317,6 +326,7 @@ AddEventHandler('esx_property:putItem', function(owner, type, item, count)
 end)
 
 ESX.RegisterServerCallback('esx_property:getOwnedProperties', function(source, cb)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getOwnedProperties', {})
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.fetchAll('SELECT name, rented FROM owned_properties WHERE owner = @owner', {
@@ -327,6 +337,7 @@ ESX.RegisterServerCallback('esx_property:getOwnedProperties', function(source, c
 end)
 
 ESX.RegisterServerCallback('esx_property:getLastProperty', function(source, cb)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getLastProperty', {})
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.fetchAll('SELECT last_property FROM users WHERE identifier = @identifier', {
@@ -337,6 +348,7 @@ ESX.RegisterServerCallback('esx_property:getLastProperty', function(source, cb)
 end)
 
 ESX.RegisterServerCallback('esx_property:getPropertyInventory', function(source, cb, owner)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getPropertyInventory', {owner = owner})
 	local xPlayer    = ESX.GetPlayerFromIdentifier(owner)
 	local blackMoney = 0
 	local items      = {}
@@ -362,6 +374,7 @@ ESX.RegisterServerCallback('esx_property:getPropertyInventory', function(source,
 end)
 
 ESX.RegisterServerCallback('esx_property:getPlayerInventory', function(source, cb)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getPlayerInventory', {})
 	local xPlayer    = ESX.GetPlayerFromId(source)
 	local blackMoney = xPlayer.getAccount('black_money').money
 	local items      = xPlayer.inventory
@@ -374,6 +387,7 @@ ESX.RegisterServerCallback('esx_property:getPlayerInventory', function(source, c
 end)
 
 ESX.RegisterServerCallback('esx_property:getPlayerDressing', function(source, cb)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getPlayerDressing', {})
 	local xPlayer  = ESX.GetPlayerFromId(source)
 
 	TriggerEvent('esx_datastore:getDataStore', 'property', xPlayer.identifier, function(store)
@@ -390,6 +404,7 @@ ESX.RegisterServerCallback('esx_property:getPlayerDressing', function(source, cb
 end)
 
 ESX.RegisterServerCallback('esx_property:getPlayerOutfit', function(source, cb, num)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:getPlayerOutfit', {num = num})
 	local xPlayer  = ESX.GetPlayerFromId(source)
 
 	TriggerEvent('esx_datastore:getDataStore', 'property', xPlayer.identifier, function(store)
@@ -400,6 +415,7 @@ end)
 
 RegisterNetEvent('esx_property:removeOutfit')
 AddEventHandler('esx_property:removeOutfit', function(label)
+	ESX.RunCustomFunction("anti_ddos", source, 'esx_property:removeOutfit', {label = label})
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	TriggerEvent('esx_datastore:getDataStore', 'property', xPlayer.identifier, function(store)
