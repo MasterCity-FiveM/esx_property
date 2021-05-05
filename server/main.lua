@@ -274,7 +274,7 @@ AddEventHandler('esx_property:getItem', function(owner, type, item, count)
 			end
 
 			store.set('weapons', storeWeapons)
-			xPlayer.addWeapon(weaponName, ammo)
+			xPlayer.addWeapon(weaponName:upper(), ammo)
 		end)
 	end
 end)
