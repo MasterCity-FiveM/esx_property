@@ -446,6 +446,8 @@ function OpenRoomMenu(property, owner)
 			ESX.TriggerServerCallback('esx_property:getPlayerDressing', function(dressing)
 				local elements = {}
 
+				TriggerEvent('master_weapons:setStatus', true)
+				TriggerEvent('master_weapons:ResetAll')
 				for i=1, #dressing, 1 do
 					table.insert(elements, {
 						label = dressing[i],
@@ -466,10 +468,16 @@ function OpenRoomMenu(property, owner)
 							TriggerEvent('skinchanger:getSkin', function(skin)
 								TriggerServerEvent('esx_skin:save', skin)
 							end)
+					
+							TriggerEvent('master_weapons:setStatus', false)
+							TriggerEvent('master_weapons:ResetAll')
 						end, data2.current.value)
 					end)
 				end, function(data2, menu2)
 					menu2.close()
+					
+					TriggerEvent('master_weapons:setStatus', false)
+					TriggerEvent('master_weapons:ResetAll')
 				end)
 			end)
 
